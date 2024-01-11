@@ -17,31 +17,33 @@ export class AuthService {
     private accountRepository: Repository<Account>,
     private jwtService: JwtService,
   ) {}
-  async login(authDto: AuthDto): Promise<ServiceData<Token | void>> {
+  async login(authDto: AuthDto): Promise<ServiceData<Token>> {
     try {
       const account = await this.accountRepository.findOneByOrFail({
         username: authDto.username,
       });
       if (await bcrypt.compare(authDto.password, account.password)) {
         return new ServiceData<Token>(HttpStatus.OK, 'Logged in!', {
-          token: await this.jwtService.signAsync({
+          token: this.jwtService.sign({
             id: account.id,
             username: account.username,
-        }),
+          }),
         });
       }
     } catch (error) {
-      console.log(error);
-      return new ServiceData<void>(
-        HttpStatus.BAD_REQUEST,
-        'Could not login!',
-      );
+      return new ServiceData<Token>(HttpStatus.BAD_REQUEST, 'Could not login!');
     }
   }
 
   async validate(req: Request): Promise<ServiceData<boolean>> {
+    const token = req.headers.cookie
+      .split(';')
+      .filter((cookie) => {
+        return cookie.includes('token');
+      })[0]
+      .split('=')[1];
     return await this.jwtService
-      .verifyAsync(extractTokenFromHeader(req))
+      .verifyAsync(token)
       .then(() => {
         return new ServiceData(HttpStatus.OK, 'Validated!', true);
       })

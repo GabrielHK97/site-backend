@@ -5,7 +5,7 @@ interface Metadata<T> {
   data: T;
 }
 
-export class ServiceData<T> {
+export class ServiceData<T = void> {
   status: HttpStatus;
   message: string;
   data: T;
