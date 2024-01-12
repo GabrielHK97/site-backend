@@ -1,6 +1,16 @@
 import { Rarity } from 'src/enums/rarity.enum';
+import { Format } from 'src/resources/format/entities/format.entity';
+import { Image } from 'src/resources/image/entities/image.entity';
 import { Set } from 'src/resources/set/entities/set.entity';
-import { Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  JoinTable,
+  ManyToMany,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity()
 export class Card {
@@ -51,10 +61,6 @@ export class Card {
   })
   rarity: Rarity;
 
-  @ManyToMany(() => Set, (set) => set.cards)
-  @JoinTable()
-  sets: Set[];
-
   @Column({
     name: 'active',
     type: 'boolean',
@@ -62,4 +68,16 @@ export class Card {
     default: true,
   })
   active: boolean;
+
+  @ManyToMany(() => Set, (set) => set.cards)
+  @JoinTable()
+  sets: Set[];
+
+  @ManyToMany(() => Format, (format) => format.cards)
+  @JoinTable()
+  formats: Format[];
+
+  @OneToMany(() => Image, (image) => image.card)
+  @JoinColumn()
+  images: Image[];
 }

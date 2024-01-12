@@ -15,7 +15,7 @@ export class SetService {
 
   async canCreateSet(createSetDto: CreateSetDto): Promise<boolean> {
     return !createSetDto.name ||
-      !createSetDto.releaseYear ||
+      !createSetDto.releaseDate ||
       (await this.setRepository
         .findOneByOrFail({ name: createSetDto.name })
         .then(() => {
@@ -29,6 +29,7 @@ export class SetService {
   }
 
   async create(createSetDto: CreateSetDto): Promise<ServiceData> {
+    console.log(await this.canCreateSet(createSetDto));
     try {
       if (await this.canCreateSet(createSetDto)) {
         await this.setRepository.save(createSetDto);

@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Card } from 'src/resources/card/entities/card.entity';
+import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Format {
@@ -34,4 +35,7 @@ export class Format {
     default: true,
   })
   active: boolean;
+
+  @ManyToMany(() => Card, (card) => card.formats, { eager: true })
+  cards: Card[];
 }

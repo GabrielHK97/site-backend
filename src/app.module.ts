@@ -11,6 +11,7 @@ import { Account } from './resources/account/entities/account.entity';
 import { Card } from './resources/card/entities/card.entity';
 import { Set } from './resources/set/entities/set.entity';
 import { Format } from './resources/format/entities/format.entity';
+import { Image } from './resources/image/entities/image.entity';
 
 @Module({
   imports: [
@@ -21,7 +22,7 @@ import { Format } from './resources/format/entities/format.entity';
       username: 'postgres',
       password: 'postgres',
       database: 'postgres',
-      entities: [Account, Card, Set, Format],
+      entities: [Account, Card, Set, Format, Image],
       synchronize: true,
     }),
     AccountModule,

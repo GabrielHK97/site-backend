@@ -1,5 +1,12 @@
 import { Card } from 'src/resources/card/entities/card.entity';
-import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Image } from 'src/resources/image/entities/image.entity';
+import {
+  Column,
+  Entity,
+  ManyToMany,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity('set')
 export class Set {
@@ -13,6 +20,14 @@ export class Set {
     nullable: false,
   })
   name: string;
+
+  @Column({
+    name: 'code',
+    type: 'varchar',
+    length: '50',
+    nullable: false,
+  })
+  code: string;
 
   @Column({
     name: 'releaseDate',
@@ -36,6 +51,9 @@ export class Set {
   })
   active: boolean;
 
-  @ManyToMany(() => Card, (card) => card.sets)
+  @ManyToMany(() => Card, (card) => card.sets, { eager: true })
   cards: Card[];
+
+  @OneToMany(() => Image, (image) => image.set)
+  images: Image[];
 }

@@ -1,5 +1,7 @@
 export class CreateSetDto {
   name: string;
-  releaseYear: Date;
+  code: string;
+  releaseDate: Date;
   description: string;
+  active: boolean;
 }
