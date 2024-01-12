@@ -1,4 +1,5 @@
 import { Rarity } from 'src/enums/rarity.enum';
+import { Type } from 'src/enums/type.enum';
 import { Format } from 'src/resources/format/entities/format.entity';
 import { Image } from 'src/resources/image/entities/image.entity';
 import { Set } from 'src/resources/set/entities/set.entity';
@@ -45,6 +46,30 @@ export class Card {
     nullable: false,
   })
   defense: number;
+
+  @Column({
+    name: 'type',
+    type: 'varchar',
+    length: 50,
+    nullable: false,
+  })
+  type: Type;
+  
+  @Column({
+    name: 'type',
+    type: 'varchar',
+    length: 50,
+    nullable: false,
+  })
+  type: Type;
+
+  @Column({
+    name: 'subtype',
+    type: 'varchar',
+    length: 50,
+    nullable: false,
+  })
+  subtype: string;
 
   @Column({
     name: 'description',
