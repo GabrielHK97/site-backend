@@ -1,34 +1,63 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Res,
+} from '@nestjs/common';
 import { FormatService } from './format.service';
 import { CreateFormatDto } from './dto/create-format.dto';
 import { UpdateFormatDto } from './dto/update-format.dto';
+import { TypeORMConstants } from 'src/constants/TypeORM.constants';
+import { Response } from 'express';
 
-@Controller('format')
+@Controller(TypeORMConstants.FORMAT_ROUTE)
 export class FormatController {
   constructor(private readonly formatService: FormatService) {}
 
   @Post()
-  create(@Body() createFormatDto: CreateFormatDto) {
-    return this.formatService.create(createFormatDto);
+  async create(
+    @Body() createFormatDto: CreateFormatDto,
+    @Res() res: Response,
+  ): Promise<Response> {
+    const response = await this.formatService.create(createFormatDto);
+    return res.status(response.status).send(response.getMetadata());
   }
 
   @Get()
-  findAll() {
-    return this.formatService.findAll();
+  async findAll(@Res() res: Response): Promise<Response> {
+    const response = await this.formatService.findAll();
+    return res.status(response.status).send(response.getMetadata());
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.formatService.findOne(+id);
+  async findOne(
+    @Param('id') id: string,
+    @Res() res: Response,
+  ): Promise<Response> {
+    const response = await this.formatService.findOne(+id);
+    return res.status(response.status).send(response.getMetadata());
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateFormatDto: UpdateFormatDto) {
-    return this.formatService.update(+id, updateFormatDto);
+  async update(
+    @Param('id') id: string,
+    @Body() updateFormatDto: UpdateFormatDto,
+    @Res() res: Response,
+  ): Promise<Response> {
+    const response = await this.formatService.update(+id, updateFormatDto);
+    return res.status(response.status).send(response.getMetadata());
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.formatService.remove(+id);
+  async remove(
+    @Param('id') id: string,
+    @Res() res: Response,
+  ): Promise<Response> {
+    const response = await this.formatService.remove(+id);
+    return res.status(response.status).send(response.getMetadata());
   }
 }

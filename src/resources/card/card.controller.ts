@@ -1,9 +1,18 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
+import { TypeORMConstants } from 'src/constants/TypeORM.constants';
 import { CardService } from './card.service';
 import { CreateCardDto } from './dto/create-card.dto';
 import { UpdateCardDto } from './dto/update-card.dto';
 
-@Controller('card')
+@Controller(TypeORMConstants.CARD_ROUTE)
 export class CardController {
   constructor(private readonly cardService: CardService) {}
 

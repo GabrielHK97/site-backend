@@ -1,8 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
+import { ServiceData } from './classes/service_data.class';
 
 @Injectable()
 export class AppService {
-  getHello(): string {
-    return 'Hello World!';
+  serve(): ServiceData {
+    return new ServiceData(HttpStatus.OK, 'Server online!');
   }
 }

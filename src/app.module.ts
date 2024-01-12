@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -12,6 +12,8 @@ import { Card } from './resources/card/entities/card.entity';
 import { Set } from './resources/set/entities/set.entity';
 import { Format } from './resources/format/entities/format.entity';
 import { Image } from './resources/image/entities/image.entity';
+import { AuthenticateMiddleware } from './middlewares/authenticate.middleware';
+import { TypeORMConstants } from './constants/TypeORM.constants';
 
 @Module({
   imports: [
@@ -34,4 +36,14 @@ import { Image } from './resources/image/entities/image.entity';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(AuthenticateMiddleware)
+      .forRoutes(
+        TypeORMConstants.CARD_ROUTE,
+        TypeORMConstants.SET_ROUTE,
+        TypeORMConstants.FORMAT_ROUTE,
+      );
+  }
+}

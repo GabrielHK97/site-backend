@@ -12,8 +12,9 @@ import { SetService } from './set.service';
 import { CreateSetDto } from './dto/create-set.dto';
 import { UpdateSetDto } from './dto/update-set.dto';
 import { Response } from 'express';
+import { TypeORMConstants } from 'src/constants/TypeORM.constants';
 
-@Controller('set')
+@Controller(TypeORMConstants.SET_ROUTE)
 export class SetController {
   constructor(private readonly setService: SetService) {}
 

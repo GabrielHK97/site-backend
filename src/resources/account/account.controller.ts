@@ -1,12 +1,4 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Res,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Res } from '@nestjs/common';
 import { AccountService } from './account.service';
 import { CreateAccountDto } from './dto/create-account.dto';
 import { Response } from 'express';
@@ -21,13 +13,13 @@ export class AccountController {
     return res.status(response.status).send(response.getMetadata());
   }
 
-  @Get(':id')
-  async findOne(@Param('id') id: string) {
-    const response = this.accountService.findOne(+id);
-  }
+  // @Get(':id')
+  // async findOne(@Param('id') id: string) {
+  //   const response = this.accountService.findOne(+id);
+  // }
 
-  @Patch('/changepassword/:id')
-  changePassword() {}
+  // @Patch('/changepassword/:id')
+  // changePassword() {}
 
   //@Patch(':id')
   //update(@Param('id') id: string, @Body() updateAccountDto: UpdateAccountDto) {

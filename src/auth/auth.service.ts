@@ -22,6 +22,7 @@ export class AuthService {
       const account = await this.accountRepository.findOneByOrFail({
         username: authDto.username,
       });
+      console.log(account);
       if (await bcrypt.compare(authDto.password, account.password)) {
         return new ServiceData<Token>(HttpStatus.OK, 'Logged in!', {
           token: this.jwtService.sign({
@@ -35,24 +36,15 @@ export class AuthService {
     }
   }
 
-  async validate(req: Request): Promise<ServiceData<boolean>> {
-    const token = req.headers.cookie
-      .split(';')
-      .filter((cookie) => {
-        return cookie.includes('token');
-      })[0]
-      .split('=')[1];
+  async authenticate(req: Request): Promise<ServiceData> {
+    const token = extractTokenFromHeader(req.headers.cookie);
     return await this.jwtService
       .verifyAsync(token)
       .then(() => {
-        return new ServiceData(HttpStatus.OK, 'Validated!', true);
+        return new ServiceData(HttpStatus.OK, 'Validated!');
       })
       .catch(() => {
-        return new ServiceData(
-          HttpStatus.BAD_REQUEST,
-          'Could not validate!',
-          false,
-        );
+        return new ServiceData(HttpStatus.BAD_REQUEST, 'Could not validate!');
       });
   }
 }
