@@ -18,6 +18,21 @@ export class AccountService {
 
   async create(createAccountDto: CreateAccountDto): Promise<ServiceData<void>> {
     try {
+      if (
+        await this.accountRepository
+          .findOneByOrFail({ username: createAccountDto.username })
+          .then(() => {
+            return true;
+          })
+          .catch(() => {
+            return false;
+          })
+      ) {
+        return new ServiceData<void>(
+          HttpStatus.BAD_REQUEST,
+          'Username already exists!',
+        );
+      }
       bcrypt.hash(createAccountDto.password, 10, async (err, hash) => {
         createAccountDto.password = hash;
         const date = new Date();

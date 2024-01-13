@@ -7,7 +7,7 @@ import { Response } from 'express';
 export class AccountController {
   constructor(private readonly accountService: AccountService) {}
 
-  @Post()
+  @Post('/register')
   async create(@Body() createAccountDto: CreateAccountDto, @Res() res: Response) {
     const response = await this.accountService.create(createAccountDto);
     return res.status(response.status).send(response.getMetadata());

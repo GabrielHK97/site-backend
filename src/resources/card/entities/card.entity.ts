@@ -1,8 +1,10 @@
 import { Rarity } from 'src/enums/rarity.enum';
-import { Type } from 'src/enums/type.enum';
+import { Color } from 'src/resources/color/entities/color.entity';
 import { Format } from 'src/resources/format/entities/format.entity';
 import { Image } from 'src/resources/image/entities/image.entity';
 import { Set } from 'src/resources/set/entities/set.entity';
+import { Subtype } from 'src/resources/subtype/entitites/subtype.entity';
+import { Type } from 'src/resources/type/entitites/type.entity';
 import {
   Column,
   Entity,
@@ -47,29 +49,17 @@ export class Card {
   })
   defense: number;
 
-  @Column({
-    name: 'type',
-    type: 'varchar',
-    length: 50,
-    nullable: false,
-  })
-  type: Type;
-  
-  @Column({
-    name: 'type',
-    type: 'varchar',
-    length: 50,
-    nullable: false,
-  })
-  type: Type;
+  @ManyToMany(() => Color, (color) => color.card)
+  @JoinTable()
+  colors: Color[];
 
-  @Column({
-    name: 'subtype',
-    type: 'varchar',
-    length: 50,
-    nullable: false,
-  })
-  subtype: string;
+  @ManyToMany(() => Type, (type) => type.card)
+  @JoinTable()
+  types: Type[];
+
+  @ManyToMany(() => Subtype, (subtype) => subtype.card)
+  @JoinTable()
+  subtypes: Subtype[];
 
   @Column({
     name: 'description',

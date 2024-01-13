@@ -14,6 +14,9 @@ import { Format } from './resources/format/entities/format.entity';
 import { Image } from './resources/image/entities/image.entity';
 import { AuthenticateMiddleware } from './middlewares/authenticate.middleware';
 import { TypeORMConstants } from './constants/TypeORM.constants';
+import { Type } from './resources/type/entitites/type.entity';
+import { Subtype } from './resources/subtype/entitites/subtype.entity';
+import { Color } from './resources/color/entities/color.entity';
 
 @Module({
   imports: [
@@ -24,7 +27,7 @@ import { TypeORMConstants } from './constants/TypeORM.constants';
       username: 'postgres',
       password: 'postgres',
       database: 'postgres',
-      entities: [Account, Card, Set, Format, Image],
+      entities: [Account, Card, Set, Format, Image, Type, Subtype, Color],
       synchronize: true,
     }),
     AccountModule,
