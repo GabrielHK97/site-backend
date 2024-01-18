@@ -1,5 +1,6 @@
 import { Card } from 'src/resources/card/entities/card.entity';
 import { Image } from 'src/resources/image/entities/image.entity';
+import { RarityOfSet } from 'src/resources/rarity-of-set/entities/rarity-of-set.entity';
 import {
   Column,
   Entity,
@@ -51,9 +52,12 @@ export class Set {
   })
   active: boolean;
 
-  @ManyToMany(() => Card, (card) => card.sets, { eager: true })
+  @ManyToMany(() => Card, (card) => card.sets)
   cards: Card[];
 
   @OneToMany(() => Image, (image) => image.set)
   images: Image[];
+
+  @OneToMany(() => RarityOfSet, (rarityOfSet) => rarityOfSet.set)
+  rarities: RarityOfSet[];
 }

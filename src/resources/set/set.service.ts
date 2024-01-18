@@ -14,28 +14,39 @@ export class SetService {
   ) {}
 
   async canCreateSet(createSetDto: CreateSetDto): Promise<boolean> {
-    return !createSetDto.name ||
-      !createSetDto.releaseDate ||
+    return (
+      createSetDto.name &&
+      createSetDto.releaseDate &&
       (await this.setRepository
         .findOneByOrFail({ name: createSetDto.name })
         .then(() => {
-          return true;
+          return false;
         })
         .catch(() => {
-          return false;
+          return true;
         }))
-      ? false
-      : true;
+    );
+  }
+
+  async canUpdateSet(updateSetDto: UpdateSetDto): Promise<boolean> {
+    return await this.setRepository
+      .findOneByOrFail({ name: updateSetDto.name })
+      .then(() => {
+        return false;
+      })
+      .catch(() => {
+        return true;
+      });
   }
 
   async create(createSetDto: CreateSetDto): Promise<ServiceData> {
-    console.log(await this.canCreateSet(createSetDto));
     try {
       if (await this.canCreateSet(createSetDto)) {
+        createSetDto.name = createSetDto.name.toLowerCase();
         await this.setRepository.save(createSetDto);
         return new ServiceData(HttpStatus.OK, 'Set saved!');
       } else {
-        return new ServiceData(HttpStatus.BAD_REQUEST, 'Missing information!');
+        return new ServiceData(HttpStatus.BAD_REQUEST, 'Bad information!');
       }
     } catch (error) {
       return new ServiceData(HttpStatus.BAD_REQUEST, error.message);
@@ -66,8 +77,12 @@ export class SetService {
 
   async update(id: number, updateSetDto: UpdateSetDto): Promise<ServiceData> {
     try {
-      await this.setRepository.update(id, updateSetDto);
-      return new ServiceData(HttpStatus.OK, 'Set updated');
+      if (this.canUpdateSet(updateSetDto)) {
+        await this.setRepository.update(id, updateSetDto);
+        return new ServiceData(HttpStatus.OK, 'Set updated!');
+      } else {
+        return new ServiceData(HttpStatus.BAD_REQUEST, 'Bad information!');
+      }
     } catch (error) {
       return new ServiceData(HttpStatus.BAD_REQUEST, error.message);
     }
@@ -78,7 +93,7 @@ export class SetService {
       const set = await this.setRepository.findOneByOrFail({ id });
       set.active = false;
       await this.setRepository.update(id, set);
-      return new ServiceData(HttpStatus.OK, 'Set updated');
+      return new ServiceData(HttpStatus.OK, 'Set removed!');
     } catch (error) {
       return new ServiceData(HttpStatus.BAD_REQUEST, error.message);
     }

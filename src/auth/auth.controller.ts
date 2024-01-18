@@ -24,10 +24,16 @@ export class AuthController {
     return response.data
       ? res
           .status(response.status)
-          .cookie('token', response.data.token)
-          .cookie('session', response.data.token)
+          .cookie('token', response.data.token, {httpOnly: true})
           .send(response.getMetadata())
       : res.status(response.status).send(response.getMetadata());
+  }
+
+  @Get('/logout')
+  async logout(
+    @Res() res: Response,
+  ): Promise<Response> {
+    return res.status(HttpStatus.OK).cookie('token', 'logout', {httpOnly: true}).send();
   }
 
   @Get()

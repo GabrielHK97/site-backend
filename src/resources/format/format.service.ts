@@ -13,27 +13,39 @@ export class FormatService {
     private formatRepository: Repository<Format>,
   ) {}
   async canCreateFormat(createFormatDto: CreateFormatDto): Promise<boolean> {
-    return !createFormatDto.name ||
-      createFormatDto.rotate == undefined ||
+    return (
+      createFormatDto.name &&
+      createFormatDto.rotate !== undefined &&
       (await this.formatRepository
         .findOneByOrFail({ name: createFormatDto.name })
         .then(() => {
-          return true;
+          return false;
         })
         .catch(() => {
-          return false;
+          return true;
         }))
-      ? false
-      : true;
+    );
+  }
+
+  async canUpdateFormat(updateFormatDto: UpdateFormatDto): Promise<boolean> {
+    return await this.formatRepository
+      .findOneByOrFail({ name: updateFormatDto.name })
+      .then(() => {
+        return false;
+      })
+      .catch(() => {
+        return true;
+      });
   }
 
   async create(createFormatDto: CreateFormatDto): Promise<ServiceData> {
     try {
       if (await this.canCreateFormat(createFormatDto)) {
+        createFormatDto.name = createFormatDto.name.toLowerCase();
         await this.formatRepository.save(createFormatDto);
         return new ServiceData(HttpStatus.OK, 'Format saved!');
       } else {
-        return new ServiceData(HttpStatus.BAD_REQUEST, 'Missing information!');
+        return new ServiceData(HttpStatus.BAD_REQUEST, 'Bad information!');
       }
     } catch (error) {
       return new ServiceData(HttpStatus.BAD_REQUEST, error.message);
@@ -42,8 +54,12 @@ export class FormatService {
 
   async findAll(): Promise<ServiceData<Format[]>> {
     try {
-      const sets = await this.formatRepository.find();
-      return new ServiceData<Format[]>(HttpStatus.OK, 'Formats found!', sets);
+      const formats = await this.formatRepository.find();
+      return new ServiceData<Format[]>(
+        HttpStatus.OK,
+        'Formats found!',
+        formats,
+      );
     } catch (error) {
       return new ServiceData<Format[]>(
         HttpStatus.BAD_REQUEST,
@@ -55,8 +71,8 @@ export class FormatService {
 
   async findOne(id: number): Promise<ServiceData<Format>> {
     try {
-      const set = await this.formatRepository.findOneByOrFail({ id });
-      return new ServiceData<Format>(HttpStatus.OK, 'Format found!', set);
+      const format = await this.formatRepository.findOneByOrFail({ id });
+      return new ServiceData<Format>(HttpStatus.OK, 'Format found!', format);
     } catch (error) {
       return new ServiceData<Format>(
         HttpStatus.BAD_REQUEST,
@@ -71,8 +87,12 @@ export class FormatService {
     updateFormatDto: UpdateFormatDto,
   ): Promise<ServiceData> {
     try {
-      await this.formatRepository.update(id, updateFormatDto);
-      return new ServiceData(HttpStatus.OK, 'Format updated');
+      if (this.canUpdateFormat(updateFormatDto)) {
+        await this.formatRepository.update(id, updateFormatDto);
+        return new ServiceData(HttpStatus.OK, 'Format updated!');
+      } else {
+        return new ServiceData(HttpStatus.OK, 'Bad information!');
+      }
     } catch (error) {
       return new ServiceData(HttpStatus.BAD_REQUEST, error.message);
     }
@@ -80,10 +100,10 @@ export class FormatService {
 
   async remove(id: number): Promise<ServiceData> {
     try {
-      const set = await this.formatRepository.findOneByOrFail({ id });
-      set.active = false;
-      await this.formatRepository.update(id, set);
-      return new ServiceData(HttpStatus.OK, 'Set updated');
+      const format = await this.formatRepository.findOneByOrFail({ id });
+      format.active = false;
+      await this.formatRepository.update(id, format);
+      return new ServiceData(HttpStatus.OK, 'Format removed!');
     } catch (error) {
       return new ServiceData(HttpStatus.BAD_REQUEST, error.message);
     }

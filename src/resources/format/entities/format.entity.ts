@@ -36,6 +36,6 @@ export class Format {
   })
   active: boolean;
 
-  @ManyToMany(() => Card, (card) => card.formats, { eager: true })
+  @ManyToMany(() => Card, (card) => card.formats)
   cards: Card[];
 }

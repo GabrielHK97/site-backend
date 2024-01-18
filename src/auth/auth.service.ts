@@ -22,7 +22,6 @@ export class AuthService {
       const account = await this.accountRepository.findOneByOrFail({
         username: authDto.username,
       });
-      console.log(account);
       if (await bcrypt.compare(authDto.password, account.password)) {
         return new ServiceData<Token>(HttpStatus.OK, 'Logged in!', {
           token: this.jwtService.sign({
@@ -44,7 +43,7 @@ export class AuthService {
         return new ServiceData(HttpStatus.OK, 'Validated!');
       })
       .catch(() => {
-        return new ServiceData(HttpStatus.BAD_REQUEST, 'Could not validate!');
+        return new ServiceData(HttpStatus.UNAUTHORIZED, 'Could not validate!');
       });
   }
 }

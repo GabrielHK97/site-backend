@@ -1,7 +1,7 @@
-import { Rarity } from 'src/enums/rarity.enum';
 import { Color } from 'src/resources/color/entities/color.entity';
 import { Format } from 'src/resources/format/entities/format.entity';
 import { Image } from 'src/resources/image/entities/image.entity';
+import { RarityOfSet } from 'src/resources/rarity-of-set/entities/rarity-of-set.entity';
 import { Set } from 'src/resources/set/entities/set.entity';
 import { Subtype } from 'src/resources/subtype/entitites/subtype.entity';
 import { Type } from 'src/resources/type/entitites/type.entity';
@@ -37,27 +37,38 @@ export class Card {
 
   @Column({
     name: 'attack',
-    type: 'smallint',
-    nullable: false,
+    type: 'varchar',
+    length: 10,
+    nullable: true,
   })
   attack: number;
 
   @Column({
     name: 'defense',
-    type: 'smallint',
-    nullable: false,
+    type: 'varchar',
+    length: 10,
+    nullable: true,
   })
   defense: number;
 
-  @ManyToMany(() => Color, (color) => color.card)
+  @ManyToMany(() => Color, (color) => color.card, {
+    eager: true,
+    onUpdate: 'CASCADE',
+  })
   @JoinTable()
   colors: Color[];
 
-  @ManyToMany(() => Type, (type) => type.card)
+  @ManyToMany(() => Type, (type) => type.card, {
+    eager: true,
+    onUpdate: 'CASCADE',
+  })
   @JoinTable()
   types: Type[];
 
-  @ManyToMany(() => Subtype, (subtype) => subtype.card)
+  @ManyToMany(() => Subtype, (subtype) => subtype.card, {
+    eager: true,
+    onUpdate: 'CASCADE',
+  })
   @JoinTable()
   subtypes: Subtype[];
 
@@ -69,14 +80,6 @@ export class Card {
   description: string;
 
   @Column({
-    name: 'rarity',
-    type: 'varchar',
-    length: 20,
-    nullable: false,
-  })
-  rarity: Rarity;
-
-  @Column({
     name: 'active',
     type: 'boolean',
     nullable: false,
@@ -84,15 +87,27 @@ export class Card {
   })
   active: boolean;
 
-  @ManyToMany(() => Set, (set) => set.cards)
+  @ManyToMany(() => Set, (set) => set.cards, {
+    eager: true,
+  })
   @JoinTable()
   sets: Set[];
 
-  @ManyToMany(() => Format, (format) => format.cards)
+  @ManyToMany(() => Format, (format) => format.cards, {
+    eager: true,
+  })
   @JoinTable()
   formats: Format[];
 
-  @OneToMany(() => Image, (image) => image.card)
+  @OneToMany(() => Image, (image) => image.card, {
+    eager: true,
+  })
   @JoinColumn()
   images: Image[];
+
+  @OneToMany(() => RarityOfSet, (rarityOfSet) => rarityOfSet.card, {
+    eager: true,
+  })
+  @JoinColumn()
+  rarities: RarityOfSet[];
 }

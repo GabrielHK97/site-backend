@@ -12,11 +12,15 @@ import { Card } from './resources/card/entities/card.entity';
 import { Set } from './resources/set/entities/set.entity';
 import { Format } from './resources/format/entities/format.entity';
 import { Image } from './resources/image/entities/image.entity';
-import { AuthenticateMiddleware } from './middlewares/authenticate.middleware';
-import { TypeORMConstants } from './constants/TypeORM.constants';
 import { Type } from './resources/type/entitites/type.entity';
 import { Subtype } from './resources/subtype/entitites/subtype.entity';
 import { Color } from './resources/color/entities/color.entity';
+import { ColorModule } from './resources/color/color.module';
+import { SubtypeModule } from './resources/subtype/subtype.module';
+import { TypeModule } from './resources/type/type.module';
+import { RarityOfSet } from './resources/rarity-of-set/entities/rarity-of-set.entity';
+import { Rarity } from './resources/rarity/entities/rarity.entity';
+import { RarityModule } from './resources/rarity/rarity.module';
 
 @Module({
   imports: [
@@ -27,7 +31,18 @@ import { Color } from './resources/color/entities/color.entity';
       username: 'postgres',
       password: 'postgres',
       database: 'postgres',
-      entities: [Account, Card, Set, Format, Image, Type, Subtype, Color],
+      entities: [
+        Account,
+        Card,
+        Set,
+        Format,
+        Image,
+        Type,
+        Subtype,
+        Color,
+        RarityOfSet,
+        Rarity,
+      ],
       synchronize: true,
     }),
     AccountModule,
@@ -35,18 +50,12 @@ import { Color } from './resources/color/entities/color.entity';
     CardModule,
     SetModule,
     FormatModule,
+    ColorModule,
+    TypeModule,
+    SubtypeModule,
+    RarityModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule implements NestModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(AuthenticateMiddleware)
-      .forRoutes(
-        TypeORMConstants.CARD_ROUTE,
-        TypeORMConstants.SET_ROUTE,
-        TypeORMConstants.FORMAT_ROUTE,
-      );
-  }
-}
+export class AppModule {}
