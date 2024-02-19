@@ -92,7 +92,11 @@ export class CardService {
     try {
       if (this.canUpdateFormat(updateCardDto)) {
         updateCardDto.name = updateCardDto.name.toLowerCase();
-        await this.cardRepository.save(updateCardDto);
+        const card = await this.cardRepository.save(updateCardDto);
+        for (const rarityOfSet of updateCardDto.rarities) {
+          rarityOfSet.cardId = card.id;
+          await this.rarityOfSetRepository.save(rarityOfSet);
+        }
         return new ServiceData(HttpStatus.OK, 'Card updated!');
       } else {
         return new ServiceData(HttpStatus.OK, 'Bad information!');

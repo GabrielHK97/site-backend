@@ -43,7 +43,7 @@ import { RarityModule } from './resources/rarity/rarity.module';
         RarityOfSet,
         Rarity,
       ],
-      synchronize: true,
+      synchronize: false,
     }),
     AccountModule,
     AuthModule,
