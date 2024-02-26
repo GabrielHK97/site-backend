@@ -8,7 +8,7 @@ import { Type } from 'src/resources/type/entitites/type.entity';
 
 export class CreateCardDto {
   name: string;
-  cost: number;
+  cost: string;
   attack: number;
   defense: number;
   colors: Color[];

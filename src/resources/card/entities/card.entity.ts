@@ -30,10 +30,11 @@ export class Card {
 
   @Column({
     name: 'cost',
-    type: 'smallint',
+    type: 'varchar',
+    length: 2,
     nullable: false,
   })
-  cost: number;
+  cost: string;
 
   @Column({
     name: 'attack',
